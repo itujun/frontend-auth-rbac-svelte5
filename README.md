@@ -64,6 +64,9 @@ src/
     register/+page.svelte         # Halaman register
     (app)/+layout.svelte           # Shell ter-autentikasi: rangkai Sidebar + Topbar + auth guard
     (app)/profile/+page.svelte      # Profile self-service
+    (app)/users/+page.svelte         # List users (pagination/search/sort/filter)
+    (app)/users/[id]/+page.ts         # Load function: fetch profile user tertentu
+    (app)/users/[id]/+page.svelte      # Admin lihat/edit profile user tertentu
 ```
 
 ### Kenapa strukturnya begini?
@@ -103,6 +106,21 @@ src/
   sidebar/topbar langsung di dalamnya. Ini memudahkan reuse/testing
   komponen shell secara independen, dan `Topbar` sendiri yang tahu
   detail state loading saat proses logout — layout tidak perlu tahu.
+- **`/users/[id]` pakai dynamic route + `+page.ts` load function**,
+  BUKAN state toggle di dalam satu halaman. Ini pola idiomatic
+  SvelteKit: URL bisa di-bookmark/di-share, tombol back browser jalan
+  natural. `load()` SENGAJA tidak throw `error()` saat request gagal
+  (mis. 403 karena tidak punya permission `profile:read`) — errornya
+  dikembalikan sebagai bagian dari `data`, supaya sidebar/topbar tetap
+  terlihat dan pesan error backend ditampilkan apa adanya di dalam
+  shell, bukan menggantikan seluruh halaman dengan error page generik.
+- **`$effect` untuk sinkronisasi form dari data reactive**: di halaman
+  detail user, form (`fullName`/`phone`/`bio`) di-drive dari `data.profile`
+  lewat `$effect`, BUKAN inisialisasi `$state` langsung dari `data`
+  sekali di awal — svelte-check bahkan memperingatkan ini
+  (`state_referenced_locally`) karena kalau SvelteKit reuse komponen
+  yang sama saat pindah dari `/users/1` ke `/users/2`, `$state` yang
+  diinisialisasi sekali tidak akan ikut ter-update ke data user baru.
 
 ## Progress Roadmap
 
@@ -115,7 +133,11 @@ src/
       Sidebar + topbar (logout, logout semua device) dengan auth guard,
       halaman Profil Saya (edit fullName/phone/bio, upload avatar,
       reset avatar ke default).
-- [ ] **Checkpoint 3 — Users Page** (pagination, search, sort, filter isActive, lihat/edit profile user lain)
+- [x] **Checkpoint 3 — Users Page**
+      List users dengan pagination/search(email)/sort(email,createdAt)/
+      filter(isActive), tiap baris link ke `/users/[id]` (dynamic route
+      + `+page.ts` load function) untuk lihat/edit profile user itu
+      lewat endpoint admin (`profile:read`/`profile:update`).
 - [ ] **Checkpoint 4 — Roles Page** (CRUD, sync permission ke role, assign/revoke user)
 - [ ] **Checkpoint 5 — Permissions Page** (CRUD)
 - [ ] **Checkpoint 6 — Testing end-to-end + polish + packaging final**
