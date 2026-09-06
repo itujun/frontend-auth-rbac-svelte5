@@ -1,0 +1,21 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+/*
+  Font: Space Grotesk untuk heading/brand (karakter geometris-teknis,
+  cocok "control panel"), Inter untuk body/form (sangat terbaca di
+  ukuran kecil), JetBrains Mono khusus untuk ID/token/JSON mentah --
+  membedakan "data dari sistem" vs teks UI biasa.
+*/
+@theme {
+	--font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+}
+
+body {
+	font-family: var(--font-sans);
+	color: var(--color-slate-900);
+	background: var(--color-slate-50);
+}
