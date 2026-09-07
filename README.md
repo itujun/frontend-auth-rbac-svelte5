@@ -70,6 +70,7 @@ src/
     (app)/roles/+page.svelte         # List roles (pagination/search/sort) + create form
     (app)/roles/[id]/+page.ts         # Load function: role + permissions + users + all-permissions (error-isolated per bagian)
     (app)/roles/[id]/+page.svelte      # Edit role, sync permission (checkbox), assign/revoke user
+    (app)/permissions/+page.svelte      # CRUD permissions (pagination/search/sort + form buat/edit inline)
 ```
 
 ### Kenapa strukturnya begini?
@@ -159,5 +160,8 @@ src/
       Load function mengisolasi error per-section (role/permissions/
       users/all-permissions bisa gagal independen sesuai permission
       yang dimiliki viewer).
-- [ ] **Checkpoint 5 — Permissions Page** (CRUD)
+- [x] **Checkpoint 5 — Permissions Page**
+      CRUD penuh (list dengan pagination/search/sort, buat/edit lewat
+      form inline yang sama, hapus) — lebih sederhana dari Roles karena
+      permission tidak punya relasi/sub-resource untuk dikelola.
 - [ ] **Checkpoint 6 — Testing end-to-end + polish + packaging final**
