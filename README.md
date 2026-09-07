@@ -67,6 +67,9 @@ src/
     (app)/users/+page.svelte         # List users (pagination/search/sort/filter)
     (app)/users/[id]/+page.ts         # Load function: fetch profile user tertentu
     (app)/users/[id]/+page.svelte      # Admin lihat/edit profile user tertentu
+    (app)/roles/+page.svelte         # List roles (pagination/search/sort) + create form
+    (app)/roles/[id]/+page.ts         # Load function: role + permissions + users + all-permissions (error-isolated per bagian)
+    (app)/roles/[id]/+page.svelte      # Edit role, sync permission (checkbox), assign/revoke user
 ```
 
 ### Kenapa strukturnya begini?
@@ -121,6 +124,16 @@ src/
   (`state_referenced_locally`) karena kalau SvelteKit reuse komponen
   yang sama saat pindah dari `/users/1` ke `/users/2`, `$state` yang
   diinisialisasi sekali tidak akan ikut ter-update ke data user baru.
+- **Load function `/roles/[id]` mengisolasi error PER-SECTION**: halaman
+  ini menggabungkan 4 request (`role`, `role permissions`, `role users`,
+  `all permissions` untuk picker) yang masing-masing butuh permission
+  BERBEDA di backend (`role:read` vs `permission:read`). Kalau digabung
+  satu `Promise.all` yang throw, satu request gagal (403) akan
+  menggagalkan SELURUH halaman walau 3 section lain datanya valid.
+  Sudah diverifikasi langsung ke backend: user dengan `role:read` saja
+  (tanpa `permission:read`) tetap bisa lihat detail role & role
+  permissions dengan normal, cuma section picker permission yang
+  menunjukkan pesan 403 — bukan seluruh halaman gagal.
 
 ## Progress Roadmap
 
@@ -138,6 +151,13 @@ src/
       filter(isActive), tiap baris link ke `/users/[id]` (dynamic route
       + `+page.ts` load function) untuk lihat/edit profile user itu
       lewat endpoint admin (`profile:read`/`profile:update`).
-- [ ] **Checkpoint 4 — Roles Page** (CRUD, sync permission ke role, assign/revoke user)
+- [x] **Checkpoint 4 — Roles Page**
+      List roles (pagination/search/sort) + create form. Detail role
+      (dynamic route `/roles/[id]`): edit nama/deskripsi, sync
+      permission via checkbox (`PUT /roles/:id/permissions`),
+      assign/revoke user by ID (`POST`/`DELETE /roles/:id/users/:userId`).
+      Load function mengisolasi error per-section (role/permissions/
+      users/all-permissions bisa gagal independen sesuai permission
+      yang dimiliki viewer).
 - [ ] **Checkpoint 5 — Permissions Page** (CRUD)
 - [ ] **Checkpoint 6 — Testing end-to-end + polish + packaging final**
