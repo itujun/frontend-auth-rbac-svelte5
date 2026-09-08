@@ -6,6 +6,7 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import Textarea from '$lib/components/ui/Textarea.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
+	import BackLink from '$lib/components/ui/BackLink.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -44,12 +45,7 @@
 	let avatarSrc = $derived(profile ? `${API_ORIGIN}${profile.avatarUrl}` : '');
 </script>
 
-<a
-	href="/users"
-	class="mb-3.5 inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-800"
->
-	&larr; Kembali ke daftar user
-</a>
+<BackLink href="/users" label="Kembali ke daftar user" />
 
 <div class="mb-5">
 	<h1 class="font-display text-xl font-semibold text-slate-900">

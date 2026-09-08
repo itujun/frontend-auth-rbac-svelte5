@@ -54,7 +54,8 @@ src/
       auth.svelte.ts       # Login/register/logout/logout-all/bootstrap (Svelte 5 runes)
       toast.svelte.ts      # Notifikasi global
     components/
-      ui/                 # Komponen generik: Button, Input, Textarea, Card, Badge, ToastStack
+      ui/                 # Button, Input, Textarea, Card, Badge, ToastStack,
+                           # Pagination, SortableTh, RowAction, BackLink
       shell/               # Komponen shell ter-autentikasi: Sidebar, Topbar
   routes/
     +layout.ts              # ssr = false
@@ -135,6 +136,13 @@ src/
   (tanpa `permission:read`) tetap bisa lihat detail role & role
   permissions dengan normal, cuma section picker permission yang
   menunjukkan pesan 403 — bukan seluruh halaman gagal.
+- **`SortableTh`/`RowAction`/`BackLink` diekstrak setelah 3 halaman
+  list (Users/Roles/Permissions) selesai dibuat**, bukan didesain di
+  awal — pola duplikasinya baru kelihatan jelas setelah ada 3 contoh
+  nyata yang identik (markup `<th>` sortable persis sama muncul di 15
+  tempat, row action link 6 tempat, back-link 2 tempat). Ini keputusan
+  refactoring yang disengaja lewat review terpisah (Checkpoint 6b),
+  bukan premature abstraction di awal sebelum polanya jelas.
 
 ## Progress Roadmap
 
@@ -164,4 +172,45 @@ src/
       CRUD penuh (list dengan pagination/search/sort, buat/edit lewat
       form inline yang sama, hapus) — lebih sederhana dari Roles karena
       permission tidak punya relasi/sub-resource untuk dikelola.
-- [ ] **Checkpoint 6 — Testing end-to-end + polish + packaging final**
+- [x] **Checkpoint 6 — Testing end-to-end + polish + packaging final**
+      Smoke test 20 langkah tersambung ke backend nyata (register →
+      seed → login → profile → avatar → RBAC create/assign/verify
+      live-permission → refresh token rotation → logout/logout-all),
+      semua lulus. Review kode menghasilkan 3 komponen reusable baru
+      (`SortableTh`, `RowAction`, `BackLink`) dari duplikasi nyata yang
+      ditemukan di 3 halaman list, plus perbaikan aksesibilitas
+      (`aria-label`, `aria-sort`) dan pembersihan dead code.
+
+## Troubleshooting
+
+- **Request gagal dengan CORS error di console browser** — pastikan
+  `CORS_ORIGIN` di `.env` BACKEND sama persis dengan origin frontend
+  (termasuk protokol & port), mis. `http://localhost:5173`.
+- **Login sukses tapi langsung ke-logout lagi setelah refresh halaman** —
+  cek cookie `refresh_token` benar-benar ter-set (DevTools → Application →
+  Cookies). Kalau backend & frontend beda domain (bukan cuma beda port),
+  cookie `sameSite: 'lax'` tidak akan terkirim cross-site; jalankan
+  keduanya di `localhost` untuk development.
+- **Upload avatar gagal dengan pesan format tidak didukung** — backend
+  memvalidasi isi file sesungguhnya (magic bytes lewat `sharp`), bukan
+  cuma ekstensi nama file. Pastikan file yang diupload benar-benar
+  JPEG/PNG/WebP valid.
+- **Endpoint tertentu selalu 403** — itu bukan bug, itu `PermissionsGuard`
+  bekerja sesuai desain. Cek user yang login sudah punya role dengan
+  permission terkait (lihat halaman Roles), atau jalankan
+  `npm run db:seed` di backend untuk promote user jadi `superadmin`.
+
+## Keterbatasan (Out of Scope)
+
+Project ini adalah test client internal, bukan aplikasi produksi. Yang
+sengaja TIDAK dibuat:
+- Tidak ada automated test (unit/e2e) untuk frontend — verifikasi
+  dilakukan manual lewat `svelte-check`, build, dan smoke test ke
+  backend nyata di tiap checkpoint (lihat catatan di atas).
+- `@sveltejs/adapter-auto` belum dikonfigurasi untuk target deploy
+  spesifik (Vercel/Node/dll) — cukup untuk development lokal, ganti
+  adapter kalau mau di-deploy.
+- Tidak ada state management library eksternal (Redux-like) — cukup
+  Svelte 5 runes karena skala aplikasi ini kecil.
+- Tidak ada dark mode / i18n — di luar tujuan project (testing tool,
+  bukan produk end-user).

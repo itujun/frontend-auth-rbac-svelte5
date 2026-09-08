@@ -7,6 +7,8 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Pagination from '$lib/components/ui/Pagination.svelte';
+	import SortableTh from '$lib/components/ui/SortableTh.svelte';
+	import RowAction from '$lib/components/ui/RowAction.svelte';
 
 	let page = $state(1);
 	let limit = $state(10);
@@ -60,11 +62,6 @@
 	function handlePageChange(nextPage: number) {
 		page = nextPage;
 		loadPermissions();
-	}
-
-	function sortIndicator(column: string) {
-		if (sortBy !== column) return '';
-		return sortOrder === 'asc' ? ' \u2191' : ' \u2193';
 	}
 
 	// ---- Form buat/edit ----
@@ -177,6 +174,7 @@
 <div class="mb-3.5 flex flex-wrap items-center gap-2.5">
 	<input
 		type="search"
+		aria-label="Cari permission"
 		placeholder="Cari nama/deskripsi..."
 		bind:value={search}
 		oninput={handleSearchInput}
@@ -199,23 +197,21 @@
 		<table class="w-full border-collapse text-[13.5px]">
 			<thead>
 				<tr>
-					<th class="border-b border-slate-300 px-2.5 py-2 text-left text-xs font-semibold text-slate-500"
-						>ID</th
-					>
-					<th class="border-b border-slate-300 px-2.5 py-2 text-left text-xs font-semibold text-slate-500">
-						<button onclick={() => handleSort('name')} class="hover:text-slate-900">
-							Nama{sortIndicator('name')}
-						</button>
-					</th>
-					<th class="border-b border-slate-300 px-2.5 py-2 text-left text-xs font-semibold text-slate-500"
-						>Deskripsi</th
-					>
-					<th class="border-b border-slate-300 px-2.5 py-2 text-left text-xs font-semibold text-slate-500">
-						<button onclick={() => handleSort('createdAt')} class="hover:text-slate-900">
-							Dibuat{sortIndicator('createdAt')}
-						</button>
-					</th>
-					<th class="border-b border-slate-300 px-2.5 py-2"></th>
+					<SortableTh label="ID" />
+					<SortableTh
+						label="Nama"
+						active={sortBy === 'name'}
+						direction={sortOrder}
+						onclick={() => handleSort('name')}
+					/>
+					<SortableTh label="Deskripsi" />
+					<SortableTh
+						label="Dibuat"
+						active={sortBy === 'createdAt'}
+						direction={sortOrder}
+						onclick={() => handleSort('createdAt')}
+					/>
+					<SortableTh label="" />
 				</tr>
 			</thead>
 			<tbody>
@@ -230,18 +226,8 @@
 							>{formatDate(p.createdAt)}</td
 						>
 						<td class="border-b border-slate-200 px-2.5 py-2.5 text-right whitespace-nowrap">
-							<button
-								onclick={() => openEditForm(p)}
-								class="text-xs font-semibold text-teal-700 hover:underline"
-							>
-								Edit
-							</button>
-							<button
-								onclick={() => handleDelete(p)}
-								class="ml-3 text-xs font-semibold text-red-600 hover:underline"
-							>
-								Hapus
-							</button>
+							<RowAction onclick={() => openEditForm(p)}>Edit</RowAction>
+							<RowAction variant="danger" class="ml-3" onclick={() => handleDelete(p)}>Hapus</RowAction>
 						</td>
 					</tr>
 				{/each}

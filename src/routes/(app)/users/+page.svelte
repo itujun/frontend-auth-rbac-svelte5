@@ -5,6 +5,8 @@
 	import Card from '$lib/components/ui/Card.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Pagination from '$lib/components/ui/Pagination.svelte';
+	import SortableTh from '$lib/components/ui/SortableTh.svelte';
+	import RowAction from '$lib/components/ui/RowAction.svelte';
 
 	let page = $state(1);
 	let limit = $state(10);
@@ -73,11 +75,6 @@
 		loadUsers();
 	}
 
-	function sortIndicator(column: string) {
-		if (sortBy !== column) return '';
-		return sortOrder === 'asc' ? ' \u2191' : ' \u2193';
-	}
-
 	function formatDate(iso: string) {
 		return new Date(iso).toLocaleString('id-ID');
 	}
@@ -95,6 +92,7 @@
 <div class="mb-3.5 flex flex-wrap items-center gap-2.5">
 	<input
 		type="search"
+		aria-label="Cari email"
 		placeholder="Cari email..."
 		bind:value={search}
 		oninput={handleSearchInput}
@@ -103,6 +101,7 @@
 	<select
 		bind:value={isActiveFilter}
 		onchange={handleFilterChange}
+		aria-label="Filter status"
 		class="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-teal-600 focus:ring-2 focus:ring-teal-600/30 focus:outline-none"
 	>
 		<option value="">Semua status</option>
@@ -126,23 +125,21 @@
 		<table class="w-full border-collapse text-[13.5px]">
 			<thead>
 				<tr>
-					<th class="border-b border-slate-300 px-2.5 py-2 text-left text-xs font-semibold text-slate-500"
-						>ID</th
-					>
-					<th class="border-b border-slate-300 px-2.5 py-2 text-left text-xs font-semibold text-slate-500">
-						<button onclick={() => handleSort('email')} class="hover:text-slate-900">
-							Email{sortIndicator('email')}
-						</button>
-					</th>
-					<th class="border-b border-slate-300 px-2.5 py-2 text-left text-xs font-semibold text-slate-500"
-						>Status</th
-					>
-					<th class="border-b border-slate-300 px-2.5 py-2 text-left text-xs font-semibold text-slate-500">
-						<button onclick={() => handleSort('createdAt')} class="hover:text-slate-900">
-							Terdaftar{sortIndicator('createdAt')}
-						</button>
-					</th>
-					<th class="border-b border-slate-300 px-2.5 py-2"></th>
+					<SortableTh label="ID" />
+					<SortableTh
+						label="Email"
+						active={sortBy === 'email'}
+						direction={sortOrder}
+						onclick={() => handleSort('email')}
+					/>
+					<SortableTh label="Status" />
+					<SortableTh
+						label="Terdaftar"
+						active={sortBy === 'createdAt'}
+						direction={sortOrder}
+						onclick={() => handleSort('createdAt')}
+					/>
+					<SortableTh label="" />
 				</tr>
 			</thead>
 			<tbody>
@@ -161,10 +158,7 @@
 							{formatDate(u.createdAt)}
 						</td>
 						<td class="border-b border-slate-200 px-2.5 py-2.5 text-right">
-							<a
-								href={`/users/${u.id}`}
-								class="text-xs font-semibold text-teal-700 hover:underline">Lihat profil</a
-							>
+							<RowAction href={`/users/${u.id}`}>Lihat profil</RowAction>
 						</td>
 					</tr>
 				{/each}

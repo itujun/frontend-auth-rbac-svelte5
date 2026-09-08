@@ -6,6 +6,8 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
+	import RowAction from '$lib/components/ui/RowAction.svelte';
+	import BackLink from '$lib/components/ui/BackLink.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -105,12 +107,7 @@
 	}
 </script>
 
-<a
-	href="/roles"
-	class="mb-3.5 inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-800"
->
-	&larr; Kembali ke daftar role
-</a>
+<BackLink href="/roles" label="Kembali ke daftar role" />
 
 <div class="mb-5">
 	<h1 class="font-display text-xl font-semibold text-slate-900">
@@ -222,12 +219,7 @@
 										{/if}
 									</td>
 									<td class="border-b border-slate-200 px-2.5 py-2 text-right">
-										<button
-											onclick={() => handleRevokeUser(u.id)}
-											class="text-xs font-semibold text-red-600 hover:underline"
-										>
-											Cabut
-										</button>
+										<RowAction variant="danger" onclick={() => handleRevokeUser(u.id)}>Cabut</RowAction>
 									</td>
 								</tr>
 							{/each}
