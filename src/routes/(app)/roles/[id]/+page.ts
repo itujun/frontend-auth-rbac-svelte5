@@ -21,7 +21,10 @@ async function safeGet<T>(path: string): Promise<SafeResult<T>> {
 		const res = await api.get<T>(path);
 		return { value: res.data, error: null };
 	} catch (err) {
-		return { value: null, error: err instanceof ApiError ? err.message : 'Gagal memuat data' };
+		return {
+			value: null,
+			error: err instanceof ApiError ? err.message : 'Gagal memuat data',
+		};
 	}
 }
 
@@ -34,7 +37,7 @@ export const load: PageLoad = async ({ params }) => {
 		safeGet<RoleUserSummary[]>(`/roles/${roleId}/users`),
 		// limit=100: picker permission butuh SEMUA permission sekaligus,
 		// bukan yang ter-paginasi 10 per halaman.
-		safeGet<Permission[]>('/permissions?limit=100')
+		safeGet<Permission[]>('/permissions?limit=100'),
 	]);
 
 	return { roleId, role, permissions, users, allPermissions };

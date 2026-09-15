@@ -12,19 +12,26 @@ export const authState = {
 	},
 	get isAuthReady() {
 		return isAuthReady;
-	}
+	},
 };
 
 export async function login(email: string, password: string): Promise<void> {
-	const res = await api.post<{ accessToken: string; user: SafeUser }>('/auth/login', {
-		email,
-		password
-	});
+	const res = await api.post<{ accessToken: string; user: SafeUser }>(
+		'/auth/login',
+		{
+			email,
+			password,
+		},
+	);
 	tokenStore.set(res.data.accessToken);
 	currentUser = res.data.user;
 }
 
-export async function register(email: string, password: string, fullName?: string): Promise<void> {
+export async function register(
+	email: string,
+	password: string,
+	fullName?: string,
+): Promise<void> {
 	await api.post('/auth/register', { email, password, fullName });
 }
 

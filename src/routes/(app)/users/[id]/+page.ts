@@ -21,7 +21,7 @@ export const load: PageLoad = async ({ params }) => {
 		return {
 			userId,
 			profile: null,
-			error: err instanceof ApiError ? err.message : 'Gagal memuat profil user'
+			error: err instanceof ApiError ? err.message : 'Gagal memuat profil user',
 		};
 	}
 };

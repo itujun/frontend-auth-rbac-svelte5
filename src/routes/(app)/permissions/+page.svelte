@@ -26,12 +26,19 @@
 		loading = true;
 		errorMessage = '';
 		try {
-			const qs = toQueryString({ page, limit, search: search || undefined, sortBy, sortOrder });
+			const qs = toQueryString({
+				page,
+				limit,
+				search: search || undefined,
+				sortBy,
+				sortOrder,
+			});
 			const res = await api.get<Permission[]>(`/permissions${qs}`);
 			rows = res.data;
 			meta = res.meta ?? null;
 		} catch (err) {
-			errorMessage = err instanceof ApiError ? err.message : 'Gagal memuat data';
+			errorMessage =
+				err instanceof ApiError ? err.message : 'Gagal memuat data';
 			rows = [];
 			meta = null;
 		} finally {
@@ -96,13 +103,13 @@
 			if (editingId) {
 				await api.patch(`/permissions/${editingId}`, {
 					name: formName,
-					description: formDescription || undefined
+					description: formDescription || undefined,
 				});
 				pushToast('Permission berhasil diperbarui', 'success');
 			} else {
 				await api.post('/permissions', {
 					name: formName,
-					description: formDescription || undefined
+					description: formDescription || undefined,
 				});
 				pushToast('Permission berhasil dibuat', 'success');
 			}
@@ -122,7 +129,10 @@
 			pushToast('Permission berhasil dihapus', 'success');
 			await loadPermissions();
 		} catch (err) {
-			pushToast(err instanceof ApiError ? err.message : 'Gagal menghapus', 'error');
+			pushToast(
+				err instanceof ApiError ? err.message : 'Gagal menghapus',
+				'error',
+			);
 		}
 	}
 
@@ -133,9 +143,12 @@
 
 <div class="mb-5 flex items-start justify-between gap-4">
 	<div>
-		<h1 class="font-display text-xl font-semibold text-slate-900">Permissions</h1>
+		<h1 class="font-display text-xl font-semibold text-slate-900">
+			Permissions
+		</h1>
 		<p class="mt-1 text-xs text-slate-500">
-			<code class="font-mono">GET/POST/PATCH/DELETE /permissions</code> &mdash; konvensi nama
+			<code class="font-mono">GET/POST/PATCH/DELETE /permissions</code> &mdash;
+			konvensi nama
 			<code class="font-mono">resource:action</code>
 		</p>
 	</div>
@@ -148,7 +161,9 @@
 			{editingId ? 'Edit permission' : 'Buat permission baru'}
 		</h2>
 		{#if formError}
-			<div class="mt-2.5 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+			<div
+				class="mt-2.5 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700"
+			>
 				{formError}
 			</div>
 		{/if}
@@ -162,10 +177,18 @@
 				required
 				mono
 			/>
-			<Input id="p-desc" label="Deskripsi (opsional)" bind:value={formDescription} />
+			<Input
+				id="p-desc"
+				label="Deskripsi (opsional)"
+				bind:value={formDescription}
+			/>
 			<div class="flex items-center gap-2.5">
-				<Button type="submit" loading={formSaving} disabled={formSaving}>Simpan</Button>
-				<Button variant="outline" onclick={() => (formOpen = false)}>Batal</Button>
+				<Button type="submit" loading={formSaving} disabled={formSaving}
+					>Simpan</Button
+				>
+				<Button variant="outline" onclick={() => (formOpen = false)}
+					>Batal</Button
+				>
 			</div>
 		</form>
 	</Card>
@@ -183,7 +206,9 @@
 </div>
 
 {#if errorMessage}
-	<div class="mb-3.5 rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700">
+	<div
+		class="mb-3.5 rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700"
+	>
 		{errorMessage}
 	</div>
 {/if}
@@ -192,7 +217,9 @@
 	{#if loading}
 		<div class="p-10 text-center text-sm text-slate-500">Memuat...</div>
 	{:else if rows.length === 0}
-		<div class="p-10 text-center text-sm text-slate-500">Belum ada permission.</div>
+		<div class="p-10 text-center text-sm text-slate-500">
+			Belum ada permission.
+		</div>
 	{:else}
 		<table class="w-full border-collapse text-[13.5px]">
 			<thead>
@@ -217,17 +244,28 @@
 			<tbody>
 				{#each rows as p (p.id)}
 					<tr class="hover:bg-slate-50">
-						<td class="border-b border-slate-200 px-2.5 py-2.5 font-mono">{p.id}</td>
-						<td class="border-b border-slate-200 px-2.5 py-2.5 font-mono">{p.name}</td>
+						<td class="border-b border-slate-200 px-2.5 py-2.5 font-mono"
+							>{p.id}</td
+						>
+						<td class="border-b border-slate-200 px-2.5 py-2.5 font-mono"
+							>{p.name}</td
+						>
 						<td class="border-b border-slate-200 px-2.5 py-2.5 text-slate-500"
 							>{p.description || '\u2014'}</td
 						>
-						<td class="border-b border-slate-200 px-2.5 py-2.5 font-mono text-xs"
+						<td
+							class="border-b border-slate-200 px-2.5 py-2.5 font-mono text-xs"
 							>{formatDate(p.createdAt)}</td
 						>
-						<td class="border-b border-slate-200 px-2.5 py-2.5 text-right whitespace-nowrap">
+						<td
+							class="border-b border-slate-200 px-2.5 py-2.5 text-right whitespace-nowrap"
+						>
 							<RowAction onclick={() => openEditForm(p)}>Edit</RowAction>
-							<RowAction variant="danger" class="ml-3" onclick={() => handleDelete(p)}>Hapus</RowAction>
+							<RowAction
+								variant="danger"
+								class="ml-3"
+								onclick={() => handleDelete(p)}>Hapus</RowAction
+							>
 						</td>
 					</tr>
 				{/each}

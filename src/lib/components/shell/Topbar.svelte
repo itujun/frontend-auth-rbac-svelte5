@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { authState, logout, logoutAll } from '$lib/state/auth.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 
@@ -9,7 +10,7 @@
 		loggingOut = true;
 		try {
 			await logout();
-			goto('/login');
+			goto(resolve('/login'));
 		} finally {
 			loggingOut = false;
 		}
@@ -20,20 +21,34 @@
 		loggingOut = true;
 		try {
 			await logoutAll();
-			goto('/login');
+			goto(resolve('/login'));
 		} finally {
 			loggingOut = false;
 		}
 	}
 </script>
 
-<header class="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
+<header
+	class="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3"
+>
 	<div></div>
 	<div class="flex items-center gap-3">
-		<span class="font-mono text-xs text-slate-500">{authState.currentUser?.email}</span>
-		<Button variant="outline" size="sm" onclick={handleLogoutAll} disabled={loggingOut}>
+		<span class="font-mono text-xs text-slate-500"
+			>{authState.currentUser?.email}</span
+		>
+		<Button
+			variant="outline"
+			size="sm"
+			onclick={handleLogoutAll}
+			disabled={loggingOut}
+		>
 			Logout semua device
 		</Button>
-		<Button variant="outline" size="sm" onclick={handleLogout} disabled={loggingOut}>Logout</Button>
+		<Button
+			variant="outline"
+			size="sm"
+			onclick={handleLogout}
+			disabled={loggingOut}>Logout</Button
+		>
 	</div>
 </header>

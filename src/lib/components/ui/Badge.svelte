@@ -13,7 +13,7 @@
 	const variantClass: Record<Variant, string> = {
 		success: 'bg-green-100 text-green-700',
 		danger: 'bg-red-100 text-red-700',
-		muted: 'bg-slate-100 text-slate-500 border border-slate-200'
+		muted: 'bg-slate-100 text-slate-500 border border-slate-200',
 	};
 </script>
 

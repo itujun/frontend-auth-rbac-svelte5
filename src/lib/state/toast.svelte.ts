@@ -12,7 +12,7 @@ let idCounter = 0;
 export const toastState = {
 	get items() {
 		return items;
-	}
+	},
 };
 
 export function pushToast(message: string, kind: ToastKind = 'info'): void {

@@ -17,8 +17,11 @@
 <ToastStack />
 
 {#if !authState.isAuthReady}
-	<div class="flex h-screen items-center justify-center gap-2 text-sm text-slate-400">
-		<span class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-r-transparent"
+	<div
+		class="flex h-screen items-center justify-center gap-2 text-sm text-slate-400"
+	>
+		<span
+			class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-r-transparent"
 		></span>
 		<span>Memeriksa sesi...</span>
 	</div>

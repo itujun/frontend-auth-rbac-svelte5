@@ -21,19 +21,20 @@
 		disabled = false,
 		loading = false,
 		onclick,
-		children
+		children,
 	}: Props = $props();
 
 	const variantClass: Record<Variant, string> = {
 		primary: 'bg-teal-600 text-white border-transparent hover:bg-teal-700',
 		outline: 'bg-white text-slate-800 border-slate-300 hover:border-slate-400',
 		danger: 'bg-transparent text-red-600 border-red-300 hover:bg-red-50',
-		ghost: 'bg-transparent text-slate-500 border-transparent hover:bg-slate-100 hover:text-slate-800'
+		ghost:
+			'bg-transparent text-slate-500 border-transparent hover:bg-slate-100 hover:text-slate-800',
 	};
 
 	const sizeClass: Record<Size, string> = {
 		md: 'text-sm px-3.5 py-2',
-		sm: 'text-xs px-2.5 py-1.5'
+		sm: 'text-xs px-2.5 py-1.5',
 	};
 </script>
 

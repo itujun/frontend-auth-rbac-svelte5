@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { resolve } from '$app/paths';
 	import { api, ApiError, toQueryString } from '$lib/api/client';
 	import { pushToast } from '$lib/state/toast.svelte';
 	import type { PaginationMeta, Role, SortOrder } from '$lib/api/types';
@@ -26,12 +27,19 @@
 		loading = true;
 		errorMessage = '';
 		try {
-			const qs = toQueryString({ page, limit, search: search || undefined, sortBy, sortOrder });
+			const qs = toQueryString({
+				page,
+				limit,
+				search: search || undefined,
+				sortBy,
+				sortOrder,
+			});
 			const res = await api.get<Role[]>(`/roles${qs}`);
 			rows = res.data;
 			meta = res.meta ?? null;
 		} catch (err) {
-			errorMessage = err instanceof ApiError ? err.message : 'Gagal memuat data';
+			errorMessage =
+				err instanceof ApiError ? err.message : 'Gagal memuat data';
 			rows = [];
 			meta = null;
 		} finally {
@@ -87,7 +95,10 @@
 		formSaving = true;
 		formError = '';
 		try {
-			await api.post('/roles', { name: formName, description: formDescription || undefined });
+			await api.post('/roles', {
+				name: formName,
+				description: formDescription || undefined,
+			});
 			pushToast('Role berhasil dibuat', 'success');
 			formOpen = false;
 			await loadRoles();
@@ -99,7 +110,11 @@
 	}
 
 	async function handleDelete(role: Role) {
-		if (!confirm(`Hapus role "${role.name}"? Semua assignment ke role ini akan ikut terhapus.`)) {
+		if (
+			!confirm(
+				`Hapus role "${role.name}"? Semua assignment ke role ini akan ikut terhapus.`,
+			)
+		) {
 			return;
 		}
 		try {
@@ -107,7 +122,10 @@
 			pushToast('Role berhasil dihapus', 'success');
 			await loadRoles();
 		} catch (err) {
-			pushToast(err instanceof ApiError ? err.message : 'Gagal menghapus', 'error');
+			pushToast(
+				err instanceof ApiError ? err.message : 'Gagal menghapus',
+				'error',
+			);
 		}
 	}
 </script>
@@ -116,8 +134,8 @@
 	<div>
 		<h1 class="font-display text-xl font-semibold text-slate-900">Roles</h1>
 		<p class="mt-1 text-xs text-slate-500">
-			<code class="font-mono">GET/POST/PATCH/DELETE /roles</code> &middot; klik salah satu role
-			untuk atur permission &amp; anggotanya
+			<code class="font-mono">GET/POST/PATCH/DELETE /roles</code> &middot; klik salah
+			satu role untuk atur permission &amp; anggotanya
 		</p>
 	</div>
 	<Button onclick={openCreateForm}>+ Role baru</Button>
@@ -127,16 +145,26 @@
 	<Card class="mb-4 max-w-md">
 		<h2 class="text-sm font-semibold text-slate-900">Buat role baru</h2>
 		{#if formError}
-			<div class="mt-2.5 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+			<div
+				class="mt-2.5 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700"
+			>
 				{formError}
 			</div>
 		{/if}
 		<form class="mt-3.5 flex flex-col gap-3.5" onsubmit={submitForm}>
 			<Input id="r-name" label="Nama" bind:value={formName} required />
-			<Input id="r-desc" label="Deskripsi (opsional)" bind:value={formDescription} />
+			<Input
+				id="r-desc"
+				label="Deskripsi (opsional)"
+				bind:value={formDescription}
+			/>
 			<div class="flex items-center gap-2.5">
-				<Button type="submit" loading={formSaving} disabled={formSaving}>Simpan</Button>
-				<Button variant="outline" onclick={() => (formOpen = false)}>Batal</Button>
+				<Button type="submit" loading={formSaving} disabled={formSaving}
+					>Simpan</Button
+				>
+				<Button variant="outline" onclick={() => (formOpen = false)}
+					>Batal</Button
+				>
 			</div>
 		</form>
 	</Card>
@@ -154,7 +182,9 @@
 </div>
 
 {#if errorMessage}
-	<div class="mb-3.5 rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700">
+	<div
+		class="mb-3.5 rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700"
+	>
 		{errorMessage}
 	</div>
 {/if}
@@ -188,17 +218,31 @@
 			<tbody>
 				{#each rows as r (r.id)}
 					<tr class="hover:bg-slate-50">
-						<td class="border-b border-slate-200 px-2.5 py-2.5 font-mono">{r.id}</td>
-						<td class="border-b border-slate-200 px-2.5 py-2.5 font-mono">{r.name}</td>
+						<td class="border-b border-slate-200 px-2.5 py-2.5 font-mono"
+							>{r.id}</td
+						>
+						<td class="border-b border-slate-200 px-2.5 py-2.5 font-mono"
+							>{r.name}</td
+						>
 						<td class="border-b border-slate-200 px-2.5 py-2.5 text-slate-500"
 							>{r.description || '\u2014'}</td
 						>
-						<td class="border-b border-slate-200 px-2.5 py-2.5 font-mono text-xs"
+						<td
+							class="border-b border-slate-200 px-2.5 py-2.5 font-mono text-xs"
 							>{formatDate(r.createdAt)}</td
 						>
-						<td class="border-b border-slate-200 px-2.5 py-2.5 text-right whitespace-nowrap">
-							<RowAction href={`/roles/${r.id}`}>Kelola</RowAction>
-							<RowAction variant="danger" class="ml-3" onclick={() => handleDelete(r)}>Hapus</RowAction>
+						<td
+							class="border-b border-slate-200 px-2.5 py-2.5 text-right whitespace-nowrap"
+						>
+							<RowAction
+								href={resolve('/(app)/roles/[id]', { id: r.id.toString() })}
+								>Kelola</RowAction
+							>
+							<RowAction
+								variant="danger"
+								class="ml-3"
+								onclick={() => handleDelete(r)}>Hapus</RowAction
+							>
 						</td>
 					</tr>
 				{/each}

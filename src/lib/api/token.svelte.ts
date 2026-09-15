@@ -17,5 +17,5 @@ export const tokenStore = {
 	},
 	set(next: string | null) {
 		token = next;
-	}
+	},
 };

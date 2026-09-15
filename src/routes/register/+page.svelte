@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { register } from '$lib/state/auth.svelte';
 	import { pushToast } from '$lib/state/toast.svelte';
 	import { ApiError } from '$lib/api/client';
@@ -20,7 +21,7 @@
 		try {
 			await register(email, password, fullName || undefined);
 			pushToast('Registrasi berhasil. Silakan login.', 'success');
-			goto('/login');
+			goto(resolve('/login'));
 		} catch (err) {
 			errorMessage = err instanceof ApiError ? err.message : 'Registrasi gagal';
 		} finally {
@@ -34,20 +35,36 @@
 		<form class="flex flex-col gap-4" onsubmit={handleSubmit}>
 			<div class="mb-1 text-center">
 				<span class="text-xl text-teal-600">&#9670;</span>
-				<h1 class="font-display mt-1.5 text-xl font-semibold text-slate-900">Buat akun</h1>
+				<h1 class="font-display mt-1.5 text-xl font-semibold text-slate-900">
+					Buat akun
+				</h1>
 				<p class="mt-1 text-xs text-slate-500">
 					Registrasi otomatis membuat profile dengan avatar default.
 				</p>
 			</div>
 
 			{#if errorMessage}
-				<div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+				<div
+					class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700"
+				>
 					{errorMessage}
 				</div>
 			{/if}
 
-			<Input id="fullName" label="Nama lengkap (opsional)" bind:value={fullName} autocomplete="name" />
-			<Input id="email" type="email" label="Email" bind:value={email} required autocomplete="username" />
+			<Input
+				id="fullName"
+				label="Nama lengkap (opsional)"
+				bind:value={fullName}
+				autocomplete="name"
+			/>
+			<Input
+				id="email"
+				type="email"
+				label="Email"
+				bind:value={email}
+				required
+				autocomplete="username"
+			/>
 			<Input
 				id="password"
 				type="password"
@@ -63,7 +80,10 @@
 
 			<p class="text-center text-xs text-slate-500">
 				Sudah punya akun?
-				<a href="/login" class="font-semibold text-teal-700 hover:underline">Masuk</a>
+				<a
+					href={resolve('/login')}
+					class="font-semibold text-teal-700 hover:underline">Masuk</a
+				>
 			</p>
 		</form>
 	</Card>

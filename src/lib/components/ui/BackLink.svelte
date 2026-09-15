@@ -1,6 +1,12 @@
 <script lang="ts">
+	import type { ResolvedPathname } from '$app/types';
+
 	interface Props {
-		href: string;
+		// ResolvedPathname (bukan string biasa) -- memaksa SETIAP
+		// pemanggil komponen ini membungkus href dengan `resolve()` dari
+		// `$app/paths` di titik pemanggilan, supaya route tervalidasi
+		// type-safe (typo path ketahuan saat compile, bukan runtime).
+		href: ResolvedPathname;
 		label: string;
 	}
 

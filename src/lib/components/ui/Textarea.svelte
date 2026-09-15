@@ -8,7 +8,14 @@
 		disabled?: boolean;
 	}
 
-	let { id, label, value = $bindable(''), placeholder, rows = 3, disabled = false }: Props = $props();
+	let {
+		id,
+		label,
+		value = $bindable(''),
+		placeholder,
+		rows = 3,
+		disabled = false,
+	}: Props = $props();
 </script>
 
 <div class="flex flex-col gap-1.5">

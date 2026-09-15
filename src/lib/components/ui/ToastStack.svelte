@@ -4,7 +4,7 @@
 	const kindClass: Record<string, string> = {
 		success: 'bg-green-50 text-green-800 border-green-200',
 		error: 'bg-red-50 text-red-800 border-red-200',
-		info: 'bg-slate-900 text-white border-transparent'
+		info: 'bg-slate-900 text-white border-transparent',
 	};
 </script>
 

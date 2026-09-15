@@ -29,7 +29,8 @@
 			phone = profile.phone ?? '';
 			bio = profile.bio ?? '';
 		} catch (err) {
-			errorMessage = err instanceof ApiError ? err.message : 'Gagal memuat profile';
+			errorMessage =
+				err instanceof ApiError ? err.message : 'Gagal memuat profile';
 		} finally {
 			loading = false;
 		}
@@ -41,11 +42,18 @@
 		e.preventDefault();
 		saving = true;
 		try {
-			const res = await api.patch<Profile>('/profile/me', { fullName, phone, bio });
+			const res = await api.patch<Profile>('/profile/me', {
+				fullName,
+				phone,
+				bio,
+			});
 			profile = res.data;
 			pushToast('Profil berhasil diperbarui', 'success');
 		} catch (err) {
-			pushToast(err instanceof ApiError ? err.message : 'Gagal menyimpan profil', 'error');
+			pushToast(
+				err instanceof ApiError ? err.message : 'Gagal menyimpan profil',
+				'error',
+			);
 		} finally {
 			saving = false;
 		}
@@ -63,7 +71,10 @@
 			profile = res.data;
 			pushToast('Avatar berhasil diperbarui', 'success');
 		} catch (err) {
-			pushToast(err instanceof ApiError ? err.message : 'Upload avatar gagal', 'error');
+			pushToast(
+				err instanceof ApiError ? err.message : 'Upload avatar gagal',
+				'error',
+			);
 		} finally {
 			uploading = false;
 			if (fileInput) fileInput.value = '';
@@ -77,7 +88,10 @@
 			profile = res.data;
 			pushToast('Avatar direset ke default', 'success');
 		} catch (err) {
-			pushToast(err instanceof ApiError ? err.message : 'Gagal reset avatar', 'error');
+			pushToast(
+				err instanceof ApiError ? err.message : 'Gagal reset avatar',
+				'error',
+			);
 		} finally {
 			uploading = false;
 		}
@@ -97,7 +111,9 @@
 {#if loading}
 	<div class="p-10 text-center text-sm text-slate-500">Memuat...</div>
 {:else if errorMessage}
-	<div class="rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700">
+	<div
+		class="rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700"
+	>
 		{errorMessage}
 	</div>
 {:else if profile}
@@ -122,7 +138,12 @@
 						hidden
 					/>
 				</label>
-				<Button variant="outline" size="sm" onclick={handleResetAvatar} disabled={uploading}>
+				<Button
+					variant="outline"
+					size="sm"
+					onclick={handleResetAvatar}
+					disabled={uploading}
+				>
 					Reset ke default
 				</Button>
 			</div>
@@ -138,7 +159,9 @@
 				<Input id="phone" label="Telepon" bind:value={phone} />
 				<Textarea id="bio" label="Bio" bind:value={bio} />
 				<div>
-					<Button type="submit" loading={saving} disabled={saving}>Simpan perubahan</Button>
+					<Button type="submit" loading={saving} disabled={saving}
+						>Simpan perubahan</Button
+					>
 				</div>
 			</form>
 		</Card>

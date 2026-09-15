@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Batalkan run lama kalau ada push baru ke branch/PR yang sama --
+# hindari buang-buang menit CI untuk commit yang sudah usang.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-check-test-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        # Panggil eslint langsung (BUKAN `npm run lint` yang punya
+        # --fix) -- alasan sama persis dengan CI backend: CI harus
+        # GAGAL kalau ada pelanggaran, bukan diam-diam memperbaiki.
+        run: npx eslint .
+
+      - name: Type check (svelte-check)
+        # Ekuivalen "typecheck" di backend -- svelte-check memvalidasi
+        # TypeScript SEKALIGUS sintaks template Svelte (yang tsc biasa
+        # tidak paham).
+        run: npm run check
+
+      - name: Unit test
+        run: npm run test
+
+      - name: Build
+        # Build juga jadi validasi tambahan: kalau ada route yang
+        # dipanggil resolve() dengan path yang typo/tidak ada,
+        # SvelteKit's typed routing akan gagal di sini, bukan di
+        # runtime production.
+        run: npm run build
+
+  # E2E (Playwright) SENGAJA belum diikutkan di sini -- butuh backend
+  # (repo terpisah: backend-auth-rbac-nest11) + Postgres beneran jalan
+  # bersamaan, bukan cuma dependency frontend sendiri. Kalau nanti mau
+  # diautomasi penuh, opsinya: checkout kedua repo di job terpisah +
+  # docker compose up dari repo backend sebelum `npm run test:e2e` di
+  # sini -- mirip semangat Testcontainers di CI backend, tapi lintas-
+  # repo jadi lebih rumit untuk saat ini.
