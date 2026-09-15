@@ -97,7 +97,24 @@
 		}
 	}
 
-	let avatarSrc = $derived(profile ? `${API_ORIGIN}${profile.avatarUrl}` : '');
+	function resolveAvatarUrl(avatarUrl: string): string {
+		// Avatar upload user sekarang berasal dari Cloudflare R2 dan
+		// SUDAH berupa URL absolut (https://pub-xxxx.r2.dev/avatars/...)
+		// -- BEDA dari default avatar yang masih path relatif
+		// (/uploads/avatars/default.png) karena itu tetap disajikan
+		// langsung dari backend (lihat catatan migrasi R2 di backend:
+		// default avatar sengaja TIDAK ikut pindah ke R2).
+		//
+		// Tanpa pengecekan ini, kedua kasus diperlakukan sama (selalu
+		// di-prefix API_ORIGIN) -- untuk avatar dari R2 hasilnya jadi
+		// URL rusak: "http://localhost:3000https://pub-xxxx.r2.dev/...".
+		if (avatarUrl.startsWith('http://') || avatarUrl.startsWith('https://')) {
+			return avatarUrl;
+		}
+		return `${API_ORIGIN}${avatarUrl}`;
+	}
+
+	let avatarSrc = $derived(profile ? resolveAvatarUrl(profile.avatarUrl) : '');
 </script>
 
 <div class="mb-5">
