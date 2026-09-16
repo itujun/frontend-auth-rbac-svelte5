@@ -21,7 +21,10 @@ export default defineConfig({
 	retries: process.env.CI ? 2 : 0,
 	reporter: 'html',
 	use: {
-		baseURL: 'http://localhost:4173', // port default `vite preview`
+		// Port 4000 (BUKAN 3000) -- sengaja beda dari default port
+		// backend NestJS supaya keduanya bisa jalan BERSAMAAN saat
+		// login.spec.ts butuh backend beneran nyambung.
+		baseURL: 'http://localhost:4000',
 		trace: 'on-first-retry',
 	},
 	projects: [
@@ -30,12 +33,19 @@ export default defineConfig({
 			use: { ...devices['Desktop Chrome'] },
 		},
 	],
-	// Playwright otomatis build+jalankan frontend production build
-	// sebelum test mulai, dan otomatis matikan setelah selesai --
-	// tidak perlu `npm run preview` manual dulu.
+	// PENTING: `node build` (server SvelteKit/adapter-node SUNGGUHAN,
+	// menjalankan hooks.server.ts + SSR per-route), BUKAN
+	// `vite preview` (cuma static file server generik bawaan Vite --
+	// tidak tahu apa-apa soal adapter-node, tidak SSR, cuma nyajiin
+	// shell HTML kosong yang sama untuk semua route). Ketahuan lewat
+	// live-testing: guard redirect (RBAC) tidak pernah jalan kalau
+	// disajikan lewat `vite preview`, karena app 100% bergantung ke JS
+	// client-side boot dari nol tanpa progressive enhancement SSR sama
+	// sekali.
 	webServer: {
-		command: 'npm run build && npm run preview',
-		url: 'http://localhost:4173',
+		command: 'npm run build && npm run start',
+		url: 'http://localhost:4000',
+		env: { PORT: '4000' },
 		reuseExistingServer: !process.env.CI,
 		timeout: 120_000,
 	},
