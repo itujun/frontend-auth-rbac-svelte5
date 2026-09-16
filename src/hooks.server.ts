@@ -43,7 +43,19 @@ export const handle: Handle = async ({ event, resolve }) => {
 		'Content-Security-Policy',
 		[
 			"default-src 'self'",
-			"script-src 'self'",
+			// script-src TERPAKSA 'unsafe-inline' juga -- app ini SPA murni
+			// (lihat +layout.ts: `export const ssr = false`), dan
+			// SATU-SATUNYA cara app mulai boot adalah lewat inline
+			// <script> bawaan SvelteKit di app.html yang meng-import()
+			// lalu manggil kit.start(). Tanpa 'unsafe-inline' di sini,
+			// browser blokir script itu dan SELURUH APP TIDAK PERNAH
+			// BOOT SAMA SEKALI (ketahuan lewat E2E test: guard redirect
+			// tidak pernah jalan karena appnya sendiri mati total, bukan
+			// masalah di logic auth). Perbaikan lebih ketat ke depannya:
+			// nonce-based CSP (dukungan native SvelteKit lewat kit.csp),
+			// tapi belum diterapkan di sini -- exact sama trade-off
+			// dengan style-src di atas.
+			"script-src 'self' 'unsafe-inline'",
 			"style-src 'self' 'unsafe-inline'",
 			"img-src 'self' data: " + API_ORIGIN,
 			`connect-src 'self' ${API_ORIGIN}`,
