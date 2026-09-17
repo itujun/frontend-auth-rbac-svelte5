@@ -1,5 +1,21 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Node TIDAK otomatis baca .env (beda dengan Vite yang load ke
+// import.meta.env untuk kode aplikasi) -- playwright.config.ts jalan
+// sebagai proses Node terpisah di luar pipeline Vite, jadi perlu
+// di-load manual. `process.loadEnvFile()` bawaan Node 20.6+ (stabil di
+// Node 22 yang dipakai project ini), tidak perlu install `dotenv`.
+// Tanpa ini, E2E_ADMIN_EMAIL/PASSWORD di .env TIDAK PERNAH terbaca
+// oleh Playwright walau sudah benar di file -- login.spec.ts akan
+// terus ke-skip diam-diam tanpa pesan error yang jelas.
+try {
+	process.loadEnvFile('.env');
+} catch {
+	// .env tidak ada -- wajar untuk CI (kredensial lewat GitHub Secrets,
+	// bukan file), atau kalau memang belum di-setup lokal. login.spec.ts
+	// akan tetap ke-skip secara aman lewat test.skip() di file itu.
+}
+
 // PRASYARAT sebelum menjalankan `npm run test:e2e`:
 // 1. Backend (rbac-backend) HARUS sudah jalan & bisa diakses di
 //    VITE_API_BASE_URL (default http://localhost:3000/api) --
