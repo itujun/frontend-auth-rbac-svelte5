@@ -2,6 +2,7 @@
 	import { api, ApiError, API_ORIGIN } from '$lib/api/client';
 	import { resolve } from '$app/paths';
 	import { pushToast } from '$lib/state/toast.svelte';
+	import { resolveAvatarUrl } from '$lib/utils/avatar';
 	import type { Profile } from '$lib/api/types';
 	import Card from '$lib/components/ui/Card.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -50,7 +51,14 @@
 		}
 	}
 
-	let avatarSrc = $derived(profile ? `${API_ORIGIN}${profile.avatarUrl}` : '');
+	// FIX: sebelumnya selalu di-prefix API_ORIGIN tanpa cek apakah
+	// avatarUrl sudah absolut -- avatar dari R2 jadi rusak
+	// ("http://localhost:3000https://pub-xxxx.r2.dev/..."). Sama seperti
+	// bug yang sudah diperbaiki di halaman /profile, cuma belum ikut
+	// ter-fix di sini karena logikanya dulu tidak reusable.
+	let avatarSrc = $derived(
+		profile ? resolveAvatarUrl(profile.avatarUrl, API_ORIGIN) : '',
+	);
 </script>
 
 <BackLink href={resolve('/(app)/users')} label="Kembali ke daftar user" />

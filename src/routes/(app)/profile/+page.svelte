@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { api, ApiError, API_ORIGIN } from '$lib/api/client';
 	import { pushToast } from '$lib/state/toast.svelte';
+	import { resolveAvatarUrl } from '$lib/utils/avatar';
 	import type { Profile } from '$lib/api/types';
 	import Card from '$lib/components/ui/Card.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -97,24 +98,12 @@
 		}
 	}
 
-	function resolveAvatarUrl(avatarUrl: string): string {
-		// Avatar upload user sekarang berasal dari Cloudflare R2 dan
-		// SUDAH berupa URL absolut (https://pub-xxxx.r2.dev/avatars/...)
-		// -- BEDA dari default avatar yang masih path relatif
-		// (/uploads/avatars/default.png) karena itu tetap disajikan
-		// langsung dari backend (lihat catatan migrasi R2 di backend:
-		// default avatar sengaja TIDAK ikut pindah ke R2).
-		//
-		// Tanpa pengecekan ini, kedua kasus diperlakukan sama (selalu
-		// di-prefix API_ORIGIN) -- untuk avatar dari R2 hasilnya jadi
-		// URL rusak: "http://localhost:3000https://pub-xxxx.r2.dev/...".
-		if (avatarUrl.startsWith('http://') || avatarUrl.startsWith('https://')) {
-			return avatarUrl;
-		}
-		return `${API_ORIGIN}${avatarUrl}`;
-	}
-
-	let avatarSrc = $derived(profile ? resolveAvatarUrl(profile.avatarUrl) : '');
+	// Logika resolve URL avatar (absolut dari R2 vs path relatif default
+	// avatar) di-extract ke $lib/utils/avatar.ts supaya reusable dan
+	// gampang di-unit-test -- lihat komentar lengkap di sana.
+	let avatarSrc = $derived(
+		profile ? resolveAvatarUrl(profile.avatarUrl, API_ORIGIN) : '',
+	);
 </script>
 
 <div class="mb-5">
