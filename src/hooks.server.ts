@@ -1,11 +1,17 @@
+import { env } from '$env/dynamic/public';
 import type { Handle } from '@sveltejs/kit';
 
 // Origin backend diambil dari env yang SAMA dengan yang dipakai
-// api/client.ts (VITE_API_BASE_URL) -- supaya CSP connect-src selalu
-// sinkron otomatis kalau URL backend berubah, tidak perlu diubah manual
-// di dua tempat.
+// api/client.ts (PUBLIC_API_BASE_URL, via $env/dynamic/public -- runtime,
+// BUKAN import.meta.env.VITE_* yang di-bake saat build) -- supaya CSP
+// connect-src selalu sinkron otomatis kalau URL backend berubah, tidak
+// perlu diubah manual di dua tempat. Karena ini dibaca dari
+// process.env saat request masuk (bukan dicetak ke bundle saat
+// `vite build`), satu image Docker yang sama tetap valid dipakai
+// lintas environment (dev/staging/prod) -- ganti env var saat
+// `docker run`, TANPA rebuild image.
 const API_ORIGIN = new URL(
-	import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api',
+	env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000/api',
 ).origin;
 
 // Setara Helmet di backend (lihat security hardening Phase 6 di repo

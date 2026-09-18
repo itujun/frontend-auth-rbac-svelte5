@@ -1,8 +1,16 @@
+import { env } from '$env/dynamic/public';
 import { tokenStore } from './token.svelte';
 import type { ApiSuccessResponse } from './types';
 
-export const API_BASE =
-	import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api';
+// $env/dynamic/public (BUKAN import.meta.env.VITE_*) -- sengaja, supaya
+// nilainya dibaca dari process.env saat SERVER benar-benar jalan
+// (runtime), bukan "dicetak permanen" ke dalam bundle JS saat
+// `vite build` (build-time). Konsekuensinya: satu Docker image yang
+// sama bisa dipakai untuk dev/staging/prod, tinggal beda env var saat
+// `docker run`/compose -- tidak perlu rebuild image tiap ganti URL
+// backend. Prefix WAJIB `PUBLIC_` (default SvelteKit) karena nilai ini
+// juga dikirim ke browser (dipakai di sini, kode client-side).
+export const API_BASE = env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000/api';
 // Dipakai untuk merangkai URL gambar avatar (/uploads/...), yang
 // di-serve backend TANPA prefix /api (lihat main.ts backend Phase 4).
 export const API_ORIGIN = API_BASE.replace(/\/api\/?$/, '');

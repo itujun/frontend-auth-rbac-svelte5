@@ -18,7 +18,7 @@ try {
 
 // PRASYARAT sebelum menjalankan `npm run test:e2e`:
 // 1. Backend (rbac-backend) HARUS sudah jalan & bisa diakses di
-//    VITE_API_BASE_URL (default http://localhost:3000/api) --
+//    PUBLIC_API_BASE_URL (default http://localhost:3000/api) --
 //    `docker compose up -d` dari repo backend.
 // 2. Database backend HARUS sudah punya user hasil `npm run db:seed`
 //    (superadmin) -- E2E ini test alur LOGIN SUNGGUHAN ke backend

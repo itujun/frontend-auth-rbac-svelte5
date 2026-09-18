@@ -1,0 +1,25 @@
+# PALING PENTING: tanpa ini, `.env` (berisi PUBLIC_API_BASE_URL versi
+# lokal developer, kredensial E2E, dst) bisa ikut ke-copy ke layer
+# image Docker lewat `COPY . .` -- kredensial yang sudah masuk image
+# HARUS dianggap bocor secara permanen, sama seperti alasan di BE.
+.env
+.env.*
+!.env.example
+
+node_modules
+
+/build
+/.svelte-kit
+
+.git
+.vscode
+.github
+
+tests
+test-results
+playwright-report
+blob-report
+coverage
+
+README.md
+MANIFEST.md

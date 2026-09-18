@@ -17,12 +17,15 @@ upload+kompresi avatar, dan pagination/search/sort/filter.
    di `.env` backend diarahkan ke `http://localhost:5173` (default Vite).
 
 2. **Copy env**
+
    ```bash
    cp .env.example .env
    ```
-   Sesuaikan `VITE_API_BASE_URL` kalau backend tidak jalan di `http://localhost:3000/api`.
+
+   Sesuaikan `PUBLIC_API_BASE_URL` kalau backend tidak jalan di `http://localhost:3000/api`.
 
 3. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -35,11 +38,11 @@ upload+kompresi avatar, dan pagination/search/sort/filter.
 
 ## Script Lain
 
-| Script          | Fungsi                                              |
-| ---------------- | ------------------------------------------------------ |
-| `npm run check`   | Type-check (svelte-check) — jalankan sebelum commit    |
-| `npm run build`   | Build production                                       |
-| `npm run preview` | Preview hasil build production                         |
+| Script            | Fungsi                                              |
+| ----------------- | --------------------------------------------------- |
+| `npm run check`   | Type-check (svelte-check) — jalankan sebelum commit |
+| `npm run build`   | Build production                                    |
+| `npm run preview` | Preview hasil build production                      |
 
 ## Arsitektur
 
@@ -157,8 +160,7 @@ src/
       reset avatar ke default).
 - [x] **Checkpoint 3 — Users Page**
       List users dengan pagination/search(email)/sort(email,createdAt)/
-      filter(isActive), tiap baris link ke `/users/[id]` (dynamic route
-      + `+page.ts` load function) untuk lihat/edit profile user itu
+      filter(isActive), tiap baris link ke `/users/[id]` (dynamic route + `+page.ts` load function) untuk lihat/edit profile user itu
       lewat endpoint admin (`profile:read`/`profile:update`).
 - [x] **Checkpoint 4 — Roles Page**
       List roles (pagination/search/sort) + create form. Detail role
@@ -204,6 +206,7 @@ src/
 
 Project ini adalah test client internal, bukan aplikasi produksi. Yang
 sengaja TIDAK dibuat:
+
 - Tidak ada automated test (unit/e2e) untuk frontend — verifikasi
   dilakukan manual lewat `svelte-check`, build, dan smoke test ke
   backend nyata di tiap checkpoint (lihat catatan di atas).
