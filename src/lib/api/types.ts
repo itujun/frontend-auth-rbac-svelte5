@@ -70,4 +70,17 @@ export interface RoleUserSummary {
 	isActive: boolean;
 }
 
+export interface AuditLog {
+	id: number;
+	actorUserId: number | null;
+	actorEmail: string | null;
+	action: string;
+	resourceType: string | null;
+	resourceId: string | null;
+	metadata: unknown;
+	ipAddress: string | null;
+	userAgent: string | null;
+	createdAt: string;
+}
+
 export type SortOrder = 'asc' | 'desc';

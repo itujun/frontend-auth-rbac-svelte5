@@ -12,11 +12,12 @@
 		{ href: resolve('/(app)/users'), label: 'Users' },
 		{ href: resolve('/(app)/roles'), label: 'Roles' },
 		{ href: resolve('/(app)/permissions'), label: 'Permissions' },
+		{ href: resolve('/(app)/audit-logs'), label: 'Audit Log' },
 	];
 </script>
 
 <aside
-	class="flex w-56 flex-shrink-0 flex-col bg-slate-950 px-3.5 py-4.5 text-slate-400"
+	class="flex w-56 shrink-0 flex-col bg-slate-950 px-3.5 py-4.5 text-slate-400"
 >
 	<div class="mb-5 flex items-center gap-2 px-2 text-white">
 		<span class="text-teal-500">&#9670;</span>
