@@ -10,7 +10,10 @@
 		loggingOut = true;
 		try {
 			await logout();
-			goto(resolve('/login'));
+			// TIDAK ada goto(resolve('/login')) manual -- sama alasannya
+			// dengan login/+page.svelte: (app)/+layout.svelte sudah reaktif
+			// terhadap authState.currentUser dan redirect otomatis begitu
+			// logout() men-set currentUser jadi null.
 		} finally {
 			loggingOut = false;
 		}

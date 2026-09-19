@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { login } from '$lib/state/auth.svelte';
 	import { pushToast } from '$lib/state/toast.svelte';
@@ -20,7 +19,14 @@
 		try {
 			await login(email, password);
 			pushToast('Login berhasil', 'success');
-			goto(resolve('/profile'));
+			// TIDAK ada goto(resolve('/profile')) manual di sini lagi --
+			// (guest)/+layout.svelte sudah reaktif terhadap
+			// authState.currentUser dan otomatis redirect begitu login()
+			// selesai set currentUser. Sebelumnya DUA goto() ke tujuan
+			// yang sama (di sini & di layout) saling balapan, hasilnya
+			// malah macet di /login (ketahuan dari test e2e). Simetris
+			// dengan (app)/+layout.svelte -- halaman di dalamnya juga
+			// tidak ada yang goto('/login') sendiri-sendiri.
 		} catch (err) {
 			errorMessage = err instanceof ApiError ? err.message : 'Login gagal';
 		} finally {
