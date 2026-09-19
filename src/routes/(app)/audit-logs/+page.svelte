@@ -99,7 +99,7 @@
 	<h1 class="font-display text-xl font-semibold text-slate-900">Audit Log</h1>
 	<p class="mt-1 text-xs text-slate-500">
 		<code class="font-mono">GET /audit-logs</code> (permission
-		<code class="font-mono">audit-log:read</code>) &middot; read-only, tidak
+		<code class="font-mono">audit_log:read</code>) &middot; read-only, tidak
 		mencatat dirinya sendiri
 	</p>
 </div>
